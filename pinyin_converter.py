@@ -27,6 +27,7 @@ def accent_placement(m):
                 retval = idx
     return retval
 
+
 pinyin_initials = ["", *list("bpmfdtnlgkhjqxrzcsyw"), *["zh", "ch", "sh"]]
 pinyin_finals = ["", "n", "ng", "nr", "r", "ngr"]
 pinyin_vowels = [*list(""), *["ai", "ei", "ao", "ou",
@@ -42,6 +43,7 @@ pinyin_tone_marks = {
     'O': 'ŌÓǑÒ', 'U': 'ŪÚǓÙ', 'Ü': 'ǕǗǙǛ',
     'v': 'ǖǘǚǜ', 'V': 'ǖǘǚǜ'
 }
+
 
 def convert_syllable(s, n2a=True):
     if not n2a:
@@ -64,6 +66,7 @@ for tone in "01234":
         a_v = convert_syllable(v+tone)
         pinyin_accented_vowels.append(a_v)
 
+
 def numbered_syllables():
     for i in pinyin_initials:
         for v in pinyin_vowels:
@@ -72,13 +75,13 @@ def numbered_syllables():
                     syllable = i + v + f + t
                     yield syllable
 
+
 def accented_syllables():
     for i in pinyin_initials:
         for v in pinyin_accented_vowels:
             for f in pinyin_finals:
                 syllable = i + v + f
                 yield syllable
-
 
 
 n_syllables_list = []
@@ -117,50 +120,50 @@ def valid_pinyin(s):
     if NUMBERED and ACCENTED:
         valid = False
 
-    for l in (fix_u(s.lower()) + '$'):
+    for letter in (fix_u(s.lower()) + '$'):
         if STATE == 0:
-            if l in "zcs":
+            if letter in "zcs":
                 STATE = ZCS
-            elif l in i:
+            elif letter in i:
                 STATE = INITIAL
-            elif l in v:
+            elif letter in v:
                 STATE = VOWEL
             else:
                 valid = False
         elif STATE == ZCS:
-            if l == 'h':
+            if letter == 'h':
                 STATE = INITIAL
-            elif l in v:
+            elif letter in v:
                 STATE = VOWEL
             else:
                 valid = False
         elif STATE == INITIAL:
-            if l in v:
+            if letter in v:
                 STATE = VOWEL
             else:
                 valid = False
         elif STATE == VOWEL:
-            if l in v:
+            if letter in v:
                 pass
-            elif l in f:
+            elif letter in f:
                 STATE = FINAL
-            elif l in t:
+            elif letter in t:
                 STATE = TONE
-            elif l == '$':
+            elif letter == '$':
                 STATE = END
             else:
                 valid = False
         elif STATE == FINAL:
-            if l in f:
+            if letter in f:
                 pass
-            elif l in t:
+            elif letter in t:
                 STATE = TONE
-            elif l == '$':
+            elif letter == '$':
                 STATE = END
             else:
                 valid = False
         elif STATE == TONE:
-            if l == '$':
+            if letter == '$':
                 STATE = END
             else:
                 valid = False
@@ -219,7 +222,7 @@ def accented_to_numbered_syllable(s):
         elif l.lower() in t4:
             current_tone = '4'
 
-    unaccented_vowel = None            
+    unaccented_vowel = None
     for k in pinyin_tone_marks:
         if accented_vowel in pinyin_tone_marks[k] and accented_vowel != "":
             unaccented_vowel = k
@@ -235,6 +238,7 @@ def accented_to_numbered(s):
         s1 = s1.replace(old_syl, new_syl)
         old_syl = find_first_syllable(s1, accented=True)
     return s1
+
 
 testing = True
 if testing:
